@@ -1,6 +1,9 @@
 trigger:
 - master
 
+variables:
+  DOTNET_SDK_VERSION: '2.1.401'
+
 pool:
   vmImage: 'VS2017-Win2016'
 
