@@ -1,38 +1,17 @@
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
 trigger:
 - master
 
-variables:
-  DOTNET_SDK_VERSION: '2.1.401'
-
 pool:
-  vmImage: 'VS2017-Win2016'
+  vmImage: 'ubuntu-latest'
+
+variables:
+  buildConfiguration: 'Release'
 
 steps:
-    - task: DotNetCoreInstaller@0
-    displayName: 'Use .NET Core SDK $(DOTNET_SDK_VERSION)'
-      inputs:
-        version: '$(DOTNET_SDK_VERSION)'
-
-    - powershell: ./build.ps1
-    displayName: 'Execute Cake PowerShell Bootstrapper'
-
-    - task: CopyFiles@2
-    displayName: 'Copy generated content'
-      inputs: 
-        SourceFolder: '$(Build.SourcesDirectory)/output'
-        contents: '**\*' 
-        targetFolder: $(Build.ArtifactStagingDirectory)/outpout
-        cleanTargetFolder: true
-
-    - task: CopyFiles@2
-    displayName: 'Copy deployment content'
-      inputs: 
-        SourceFolder: '$(Build.SourcesDirectory)/deployment'
-        contents: '**\*' 
-        targetFolder: $(Build.ArtifactStagingDirectory)/deployment
-        cleanTargetFolder: true
-
-    - task: PublishBuildArtifacts@1
-    displayName: 'Publish Artifact'
-      inputs:
-        PathtoPublish: '$(build.artifactstagingdirectory)'
+- script: dotnet build --configuration $(buildConfiguration)
+  displayName: 'dotnet build $(buildConfiguration)'
